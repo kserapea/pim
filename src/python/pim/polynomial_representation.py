@@ -60,3 +60,30 @@ def calculate(coefficient: int, index: int) -> (int, int):
         y: int = index
 
     return (x, y)
+
+def interpolate(points):
+    """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
+    if len(points) == 0:
+        raise ValueError('Must provide at least one point.')
+    x_values = [p[0] for p in points]
+
+    if len(set(x_values)) < len(x_values):
+        raise ValueError('Not all x values are distinct.')
+    terms = [single_term(points, i) for i in range(0, len(points))]
+
+    return sum(terms, ZERO)
+
+def single_term(points, i):
+    """ Return one term of an interpolated polynomial.
+        Arguments:
+            - points: a list of (float, float)
+            - i: an integer indexing a specific point """
+    the_term = Polynomial([1.])
+    xi, yi = points[i]
+    for j, p in enumerate(points):
+        if j == i:
+            continue
+        xj = p[0]
+        the_term = the_term * Polynomial([-xj / (xi - xj), 1.0 / (xi - xj)])
+
+    return the_term * Polynomial([yi])
