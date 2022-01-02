@@ -5,6 +5,7 @@ from functools import reduce
 from IPython.display import display, Image
 
 def run() -> None:
+    ...
 
 if __name__ == "__main__":
     run()

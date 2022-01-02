@@ -5,7 +5,7 @@ __pycache__/
 
 # Intellij stuff
 .idea/
-.DS_Store
+*/.DS_Store
 
 # C extensions
 *.so

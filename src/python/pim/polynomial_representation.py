@@ -13,11 +13,11 @@ class Polynomial:
         filter_coeff_list = list(filter(lambda x: x != "", coeff_list))
         return re.sub(r"\+ -", "- ", " + ".join(filter_coeff_list))
 
-    def __add__(self, other: Polynomial) -> Polynomial:
+    def __add__(self, other: "Polynomial") -> "Polynomial":
         """returns the sum of two polynomials (like degrees are added together)"""
         return [sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue = 0)]
 
-    def __mul__(self, other: Polynomial) -> Polynomial:
+    def __mul__(self, other: "Polynomial") -> "Polynomial":
         """returns the product of two polynomials"""
         len_self: int = len(self.coefficients)
         len_other: int = len(other.coefficients)
