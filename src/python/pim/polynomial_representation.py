@@ -14,28 +14,41 @@ class Polynomial:
         filter_coeff_list = list(filter(lambda x: x != "", coeff_list))
         return re.sub(r"\+ -", "- ", " + ".join(filter_coeff_list))
 
-    def __add__(self, other: "Polynomial") -> List[int]:
+    def __add__(self, other: "Polynomial") -> "Polynomial":
         """returns the sum of two polynomials (like degrees are added together)"""
-        return [sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue = 0)]
+        return Polynomial([sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue = 0)])
 
     def __mul__(self, other: "Polynomial") -> "Polynomial":
-        """returns the product of two polynomials"""
-        len_self: int = len(self.coefficients)
-        len_other: int = len(other.coefficients)
-        blank_coeff_list: list(int) = [0] * (len_self + len_other - 1)
+        """returns the product of two polynomials
+        - If 𝑓 is a degree 𝑛 polynomial and 𝑔 is a degree 𝑚 polynomial then their product 𝑓⋅𝑔 is a degree 𝑛+𝑚 polynomial.
+        - If 𝑓 or 𝑔 are a zero polynomial, their product 𝑓⋅𝑔 is a degree 𝑚 polynomial (convention that a zero polynomial has a degree of 0).
+        """
+        if Polynomial.evaluate(self, 1) == 0:
+            #if a degree 0 polynomial, any evaluation value will result in 0
+            degree_self: int = 0
+        else:
+            degree_self: int = len(self.coefficients)
+
+        if Polynomial.evaluate(self, 1) == 0:
+            #if a degree 0 polynomial, any evaluation value will result in 0
+            degree_other: int = 0
+        else:
+            degree_other: int = len(other.coefficients)
+        #create a placeholder list of length n+m
+        coeff_list: list(int) = [0] * (degree_self + degree_other)
 
         #Multiplies two polynomials term by term
-        for i in range(len_self):
-            for j in range(len_other):
-                blank_coeff_list[i + j] += self.coefficients[i] * other.coefficients[j]
-        return blank_coeff_list
+        for i in range(len(self.coefficients)):
+            for j in range(len(other.coefficients)):
+                coeff_list[i + j] += self.coefficients[i] * other.coefficients[j]
+        return coeff_list
 
     def evaluate(self, value: int) -> int:
         """evaluates a polynomial at a given value"""
-        calculate_list: list[PolyTerm] = [Polynomial.calculate(c, i) for i, c in enumerate(self.coefficients)]
+        polyterm_list: list[PolyTerm] = [Polynomial.create_polyterm(c, i) for i, c in enumerate(self.coefficients)]
         total: int = 0
         for i in range(len(self.coefficients)):
-            total += calculate_list.PolyTerm.coefficient[i] * (value ** calculate_list.PolyTerm.order[i])
+            total += polyterm_list[i].coefficient * (value ** polyterm_list[i].order)
         return total
 
     @staticmethod
@@ -54,13 +67,14 @@ class Polynomial:
         return output
 
     @staticmethod
-    def calculate(coefficient: int, index: int) -> PolyTerm:
+    def create_polyterm(coefficient: int, index: int) -> "PolyTerm":
         if coefficient == 0:
             return PolyTerm(0, 0)
         else:
             return PolyTerm(coefficient, index)
 
 PolyTerm = namedtuple("PolyTerm", ["coefficient", "order"])
+ZERO: Polynomial = Polynomial([])
 
 def interpolate(points):
     """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
