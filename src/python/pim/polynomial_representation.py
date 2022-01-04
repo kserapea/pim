@@ -1,4 +1,5 @@
 from typing import List
+from collections import namedtuple
 import re
 import itertools as it
 import numpy as np
@@ -9,11 +10,11 @@ class Polynomial:
 
     def __str__(self) -> str:
         """returns a string representation of the polynomial"""
-        coeff_list: List[str] = [display(c, i) for i, c in enumerate(self.coefficients)]
+        coeff_list: List[str] = [Polynomial.display(c, i) for i, c in enumerate(self.coefficients)]
         filter_coeff_list = list(filter(lambda x: x != "", coeff_list))
         return re.sub(r"\+ -", "- ", " + ".join(filter_coeff_list))
 
-    def __add__(self, other: "Polynomial") -> "Polynomial":
+    def __add__(self, other: "Polynomial") -> List[int]:
         """returns the sum of two polynomials (like degrees are added together)"""
         return [sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue = 0)]
 
@@ -31,35 +32,35 @@ class Polynomial:
 
     def evaluate(self, value: int) -> int:
         """evaluates a polynomial at a given value"""
-        calculate_list: list[str] = [calculate(c, i) for i, c in enumerate(self.coefficients)]
+        calculate_list: list[PolyTerm] = [Polynomial.calculate(c, i) for i, c in enumerate(self.coefficients)]
         total: int = 0
         for i in range(len(self.coefficients)):
-            total += calculate_list[i][0] * (value ** calculate_list[i][1])
+            total += calculate_list.PolyTerm.coefficient[i] * (value ** calculate_list.PolyTerm.order[i])
         return total
 
-def display(coefficient: int, index: int) -> str:
-    if index == 0:
-        x: str = ""
-    elif index == 1:
-        x: str = "x"
-    else:
-        x: str = "x^"+str(index)
-    if coefficient == 0:
-        output: str = ""
-    else:
-        output: str = str(coefficient) + x
+    @staticmethod
+    def display(coefficient: int, index: int) -> str:
+        if index == 0:
+            x: str = ""
+        elif index == 1:
+            x: str = "x"
+        else:
+            x: str = "x^"+str(index)
+        if coefficient == 0:
+            output: str = ""
+        else:
+            output: str = str(coefficient) + x
 
-    return output
+        return output
 
-def calculate(coefficient: int, index: int) -> (int, int):
-    if coefficient == 0:
-        x: int = 0
-        y: int = 0
-    else:
-        x: int = coefficient
-        y: int = index
+    @staticmethod
+    def calculate(coefficient: int, index: int) -> PolyTerm:
+        if coefficient == 0:
+            return PolyTerm(0, 0)
+        else:
+            return PolyTerm(coefficient, index)
 
-    return (x, y)
+PolyTerm = namedtuple("PolyTerm", ["coefficient", "order"])
 
 def interpolate(points):
     """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
