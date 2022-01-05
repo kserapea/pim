@@ -73,32 +73,35 @@ class Polynomial:
         else:
             return PolyTerm(coefficient, index)
 
+    def __iter__(self) -> List[int]:
+        return iter(self.coefficients)
+
 PolyTerm = namedtuple("PolyTerm", ["coefficient", "order"])
 ZERO: Polynomial = Polynomial([])
 
-def interpolate(points):
+def interpolate(points: List[(float, float)]) -> "Polynomial":
     """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
     if len(points) == 0:
         raise ValueError('Must provide at least one point.')
-    x_values = [p[0] for p in points]
+    x_values: List[int] = [p[0] for p in points]
 
     if len(set(x_values)) < len(x_values):
         raise ValueError('Not all x values are distinct.')
-    terms = [single_term(points, i) for i in range(0, len(points))]
+    terms: Polynomial = [single_term(points, i) for i in range(0, len(points))]
 
     return sum(terms, ZERO)
 
-def single_term(points, i):
+def single_term(points: List[(float, float)], i: int) -> "Polynomial":
     """ Return one term of an interpolated polynomial.
         Arguments:
             - points: a list of (float, float)
             - i: an integer indexing a specific point """
-    the_term = Polynomial([1.])
-    xi, yi = points[i]
+    the_term: Polynomial = Polynomial([1.])
+    xi, yi: (float, float) = points[i]
     for j, p in enumerate(points):
         if j == i:
             continue
-        xj = p[0]
-        the_term = the_term * Polynomial([-xj / (xi - xj), 1.0 / (xi - xj)])
+        xj: float = p[0]
+        the_term: Polynomial = the_term * Polynomial([-xj / (xi - xj), 1.0 / (xi - xj)])
 
     return the_term * Polynomial([yi])
