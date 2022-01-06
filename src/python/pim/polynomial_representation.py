@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from collections import namedtuple
 import re
 import itertools as it
@@ -79,7 +79,7 @@ class Polynomial:
 PolyTerm = namedtuple("PolyTerm", ["coefficient", "order"])
 ZERO: Polynomial = Polynomial([])
 
-def interpolate(points: List[(float, float)]) -> "Polynomial":
+def interpolate(points: List[tuple[float, float]]) -> "Polynomial":
     """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
     if len(points) == 0:
         raise ValueError('Must provide at least one point.')
@@ -91,13 +91,15 @@ def interpolate(points: List[(float, float)]) -> "Polynomial":
 
     return sum(terms, ZERO)
 
-def single_term(points: List[(float, float)], i: int) -> "Polynomial":
+def single_term(points: List[Tuple[float, float]], i: int) -> "Polynomial":
     """ Return one term of an interpolated polynomial.
         Arguments:
             - points: a list of (float, float)
             - i: an integer indexing a specific point """
     the_term: Polynomial = Polynomial([1.])
-    xi, yi: (float, float) = points[i]
+    xi: float
+    yi: float
+    xi, yi = points[i]
     for j, p in enumerate(points):
         if j == i:
             continue
