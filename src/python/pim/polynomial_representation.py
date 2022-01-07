@@ -3,12 +3,11 @@ from collections import namedtuple
 import re
 import itertools as it
 
-
 class Polynomial(object):
-    def __init__(self, coefficients: List[int]) -> None:
+    def __init__(self, coefficients: List[float]) -> None:
         """The list of coefficients includes 0 coefficients for the polynomial.
         For example, Polynomial([1, 2, 0, 3]) would represent 1 + 2x + 0x^2 + 3x^3"""
-        self.coefficients: List[int] = coefficients
+        self.coefficients: List[float] = coefficients
 
     def __str__(self) -> str:
         """returns a string representation of the polynomial"""
@@ -38,7 +37,7 @@ class Polynomial(object):
         else:
             degree_other: int = len(other.coefficients)
         # create a placeholder list of length n+m
-        coeff_list: list[int] = [0] * (degree_self + degree_other)
+        coeff_list: list[float] = [0] * (degree_self + degree_other)
 
         # Multiplies two polynomials term by term
         for i in range(len(self.coefficients)):
@@ -55,7 +54,7 @@ class Polynomial(object):
         return total
 
     @staticmethod
-    def display(coefficient: int, index: int) -> str:
+    def display(coefficient: float, index: int) -> str:
         if index == 0:
             x: str = ""
         elif index == 1:
@@ -76,7 +75,7 @@ class Polynomial(object):
         else:
             return PolyTerm(coefficient, index)
 
-    def __iter__(self) -> Iterator[int]:
+    def __iter__(self) -> Iterator[float]:
         return iter(self.coefficients)
 
 

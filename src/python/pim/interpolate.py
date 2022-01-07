@@ -29,6 +29,9 @@ def interpolate(points: List[Tuple[float, float]]) -> Polynomial:
 
     if len(set(x_values)) < len(x_values):
         raise ValueError('Not all x values are distinct.')
-    terms: Polynomial = Polynomial([single_term(points, i) for i in range(0, len(points))])
+    terms: List[Polynomial] = [single_term(points, i) for i in range(0, len(points))]
 
-    return sum(terms, ZERO)
+    for i in enumerate(terms):
+        the_sum: Polynomial = sum(i, ZERO)
+
+    return the_sum
