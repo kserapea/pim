@@ -1,11 +1,13 @@
-from typing import List, Tuple
+from typing import List, Iterator
 from collections import namedtuple
 import re
 import itertools as it
-import numpy as np
 
-class Polynomial:
+
+class Polynomial(object):
     def __init__(self, coefficients: List[int]) -> None:
+        """The list of coefficients includes 0 coefficients for the polynomial.
+        For example, Polynomial([1, 2, 0, 3]) would represent 1 + 2x + 0x^2 + 3x^3"""
         self.coefficients: List[int] = coefficients
 
     def __str__(self) -> str:
@@ -20,28 +22,29 @@ class Polynomial:
 
     def __mul__(self, other: "Polynomial") -> "Polynomial":
         """returns the product of two polynomials
-        - If 𝑓 is a degree 𝑛 polynomial and 𝑔 is a degree 𝑚 polynomial then their product 𝑓⋅𝑔 is a degree 𝑛+𝑚 polynomial.
-        - If 𝑓 or 𝑔 are a zero polynomial, their product 𝑓⋅𝑔 is a degree 𝑚 polynomial (convention that a zero polynomial has a degree of 0).
+        - If 𝑓 is a degree 𝑛 polynomial and 𝑔 is a degree 𝑚 polynomial then their product 𝑓⋅𝑔 is a degree 𝑛+𝑚 polynomial
+        - If 𝑓 or 𝑔 are a zero polynomial, their product 𝑓⋅𝑔 is a degree 𝑚 polynomial
+        (convention that a zero polynomial has a degree of 0)
         """
         if Polynomial.evaluate(self, 1) == 0:
-            #if a degree 0 polynomial, any evaluation value will result in 0
+            # if a degree 0 polynomial, any evaluation value will result in 0
             degree_self: int = 0
         else:
             degree_self: int = len(self.coefficients)
 
         if Polynomial.evaluate(self, 1) == 0:
-            #if a degree 0 polynomial, any evaluation value will result in 0
+            # if a degree 0 polynomial, any evaluation value will result in 0
             degree_other: int = 0
         else:
             degree_other: int = len(other.coefficients)
-        #create a placeholder list of length n+m
-        coeff_list: list(int) = [0] * (degree_self + degree_other)
+        # create a placeholder list of length n+m
+        coeff_list: list[int] = [0] * (degree_self + degree_other)
 
-        #Multiplies two polynomials term by term
+        # Multiplies two polynomials term by term
         for i in range(len(self.coefficients)):
             for j in range(len(other.coefficients)):
                 coeff_list[i + j] += self.coefficients[i] * other.coefficients[j]
-        return coeff_list
+        return Polynomial(coeff_list)
 
     def evaluate(self, value: int) -> int:
         """evaluates a polynomial at a given value"""
@@ -73,37 +76,9 @@ class Polynomial:
         else:
             return PolyTerm(coefficient, index)
 
-    def __iter__(self) -> List[int]:
+    def __iter__(self) -> Iterator[int]:
         return iter(self.coefficients)
+
 
 PolyTerm = namedtuple("PolyTerm", ["coefficient", "order"])
 ZERO: Polynomial = Polynomial([])
-
-def interpolate(points: List[tuple[float, float]]) -> "Polynomial":
-    """ Returns the unique polynomial of degree at most n passing through the given n+1 points."""
-    if len(points) == 0:
-        raise ValueError('Must provide at least one point.')
-    x_values: List[int] = [p[0] for p in points]
-
-    if len(set(x_values)) < len(x_values):
-        raise ValueError('Not all x values are distinct.')
-    terms: Polynomial = [single_term(points, i) for i in range(0, len(points))]
-
-    return sum(terms, ZERO)
-
-def single_term(points: List[Tuple[float, float]], i: int) -> "Polynomial":
-    """ Return one term of an interpolated polynomial.
-        Arguments:
-            - points: a list of (float, float)
-            - i: an integer indexing a specific point """
-    the_term: Polynomial = Polynomial([1.])
-    xi: float
-    yi: float
-    xi, yi = points[i]
-    for j, p in enumerate(points):
-        if j == i:
-            continue
-        xj: float = p[0]
-        the_term: Polynomial = the_term * Polynomial([-xj / (xi - xj), 1.0 / (xi - xj)])
-
-    return the_term * Polynomial([yi])
