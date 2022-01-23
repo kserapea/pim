@@ -17,13 +17,14 @@ def run() -> None:
     print(h)
     print(j)
 
-    Polynomial.evaluate(f, 4)
+    print(Polynomial.evaluate(f, 4))
 
     points1 = [(1, 1)]
     points2 = [(1, 1), (2, 0)]
     points3 = [(1, 1), (2, 4), (7, 9)]
-    interpolate(points1)
-    interpolate(points2)
+    print(interpolate(points1))
+    print(interpolate(points2))
+    print(interpolate(points3))
 
 
 if __name__ == "__main__":

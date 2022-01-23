@@ -28,12 +28,12 @@ class Polynomial(object):
         (convention that a zero polynomial has a degree of 0)
         """
         if Polynomial.find_degree(self) == -1:
-            degree_self: int = 0
+            degree_self: int = 1
         else:
             degree_self: int = Polynomial.find_degree(self)
 
         if Polynomial.find_degree(other) == -1:
-            degree_other: int = 0
+            degree_other: int = 1
         else:
             degree_other: int = Polynomial.find_degree(other)
         # create a placeholder list of length n+m
