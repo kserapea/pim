@@ -4,6 +4,7 @@ import re
 import itertools as it
 import numpy as np
 
+
 class Polynomial(object):
     def __init__(self, coefficients: List[float]) -> None:
         """The list of coefficients includes 0 coefficients for the polynomial.
@@ -19,7 +20,7 @@ class Polynomial(object):
 
     def __add__(self, other: "Polynomial") -> "Polynomial":
         """returns the sum of two polynomials (like degrees are added together)"""
-        return Polynomial([sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue = 0)])
+        return Polynomial([sum(n) for n in it.zip_longest(self.coefficients, other.coefficients, fillvalue=0)])
 
     def __mul__(self, other: "Polynomial") -> "Polynomial":
         """returns the product of two polynomials
@@ -77,7 +78,7 @@ class Polynomial(object):
         elif index == 1:
             x: str = "x"
         else:
-            x: str = "x^"+str(index)
+            x: str = "x^" + str(index)
         if coefficient == 0:
             output: str = ""
         else:
