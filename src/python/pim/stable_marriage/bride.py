@@ -23,28 +23,35 @@ class Bride(object):
     def current_proposal(self, groom_ids: List[Groom], held_proposal: "GroomRank") -> List[Groom]:
         """If a woman gets new proposals in a round, she immediately rejects every proposer except her most preferred,
         but does not accept that proposal. Returns a tuple of index and groom id"""
-
-        for index in range(len(self.preferences)):
-            list_with_ranks: list[GroomRank] = [(x, index) for x in groom_ids if x.identifier == self.preferences[index]]
+        if len(groom_ids) == 0:
+            pass
+            for index in range(len(self.preferences)):
+                list_with_ranks: list[GroomRank] = \
+                    [(x, index) for x in groom_ids if x.identifier == self.preferences[index]]
         # return (groom_id, bride_index) and then find smallest one
         # sorted_list: list[GroomRank] = list_with_ranks.sort(key=lambda g: g[1])
-        selected_proposal: GroomRank = min(list_with_ranks, key=lambda r: r[1])
-        rejected_proposals: list[GroomRank] = list(filter(lambda x: x != selected_proposal, list_with_ranks))
+            selected_proposal: GroomRank = min(list_with_ranks, key=lambda r: r[1])
+            rejected_proposals: list[GroomRank] = list(filter(lambda x: x != selected_proposal, list_with_ranks))
         # selected_proposal: GroomRank = sorted_list.pop(0)
         # compare held proposal to selected
-        final_preference: GroomRank = min(list[selected_proposal, held_proposal], key=lambda r: r[1])
+            if held_proposal is None:
+                final_preference: GroomRank = selected_proposal
+            else:
+                final_preference: GroomRank = min(list[selected_proposal, held_proposal], key=lambda r: r[1])
 
         # create list of rejects to send to next round
-        rejects: List[Groom] = [x.groom_id for x in rejected_proposals]
-        if final_preference == selected_proposal:
-            reject_list: List[Groom] = rejects + held_proposal[0]
-        else:
-            reject_list: List[Groom] = rejects + selected_proposal.groom_id
+            rejects: List[Groom] = [x.groom_id for x in rejected_proposals]
+            if held_proposal is None:
+                reject_list = rejects
+            elif final_preference == selected_proposal:
+                reject_list: List[Groom] = rejects + held_proposal[0]
+            else:
+                reject_list: List[Groom] = rejects + selected_proposal.groom_id
 
-        self.held_proposal: Optional[GroomRank] = final_preference
-        self.preferences: List[int] = self.preferences[:final_preference.bride_index+1]
+            self.held_proposal: Optional[GroomRank] = final_preference
+            self.preferences: List[int] = self.preferences[:final_preference[1]+1]
 
-        return reject_list
+            return reject_list
 
 
 GroomRank = namedtuple("GroomRank", ["groom_id", "bride_index"])
