@@ -19,7 +19,7 @@ class Cohort:
         return len(self.groom_cohort)
 
     def matching_round(self, grooms_involved: List[Groom]) -> List[Groom]:
-        proposal_list: List[(Groom, int)] = proposal_round(grooms_involved)
+        proposal_list: List[GroomChoices] = proposal_round(grooms_involved)
 
         rejects: List[int] = []
 
@@ -34,7 +34,7 @@ class Cohort:
 
 
 def proposal_round(grooms_involved: List[Groom]) -> List[GroomChoices]:
-    """returns the current proposals for the round"""
+    """returns the current proposals for the round and also deletes the used preference from groom"""
     proposal_list: List[GroomChoices] = []
     for x in grooms_involved:
         proposal_list += (x, x.preferences[0])
