@@ -1,7 +1,8 @@
+from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import List
 
-from src.python.pim.stable_marriage.bride import Bride, GroomRank
+from src.python.pim.stable_marriage.bride import Bride, GroomRank, GroomChoices
 from src.python.pim.stable_marriage.groom import Groom
 
 
@@ -32,11 +33,12 @@ class Cohort:
         return reject_grooms
 
 
-def proposal_round(grooms_involved: List[Groom]) -> List[(Groom, int)]:
+def proposal_round(grooms_involved: List[Groom]) -> List[GroomChoices]:
     """returns the current proposals for the round"""
-    proposal_list: List[(Groom, int)] = []
+    proposal_list: List[GroomChoices] = []
     for x in grooms_involved:
         proposal_list += (x, x.preferences[0])
     for x in grooms_involved:
         x.preferences.pop(0)
     return proposal_list
+

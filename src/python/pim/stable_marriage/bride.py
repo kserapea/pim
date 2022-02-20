@@ -15,9 +15,9 @@ class Bride(object):
         """should we raise an error depending on # of grooms?"""
         return len(self.preferences)
 
-    def filter_proposal_round(self, all_proposals: List[Tuple[Groom, int]]) -> List[Groom]:
+    def filter_proposal_round(self, all_proposals: List["GroomChoices"]) -> List[Groom]:
         """ all_proposals: [(1,1), (2, 1), (3, 2), (4, 2)] and bride is #1, should return [1, 2] """
-        groom_list: List[Groom] = [x for x in all_proposals[2] if x == self.identifier]
+        groom_list: List[Groom] = [x.groom_id for x in all_proposals if x.desired_bride_id == self.identifier]
         return groom_list
 
     def current_proposal(self, groom_ids: List[int], held_proposal: "GroomRank") -> List[int]:
@@ -46,3 +46,4 @@ class Bride(object):
 
 
 GroomRank = namedtuple("GroomRank", ["groom_id", "bride_index"])
+GroomChoices = namedtuple("GroomChoice", ["groom_id", "desired_bride_id"])
