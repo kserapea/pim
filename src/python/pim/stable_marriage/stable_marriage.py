@@ -19,7 +19,8 @@ def complete_marriages(input_cohort: Cohort, initial_grooms: List[Groom]) -> Sta
 
     marriages: List["Marriage"] = []
     for x in input_cohort.bride_cohort:
-        marriages += (x.held_proposal.groom_id, x.identifier)
+        new_marriage: Marriage = (x.held_proposal[0].identifier, x.identifier)
+        marriages.append(new_marriage)
 
     return StableMarriage(marriages)
 

@@ -21,12 +21,18 @@ class Cohort:
     def matching_round(self, grooms_involved: List[Groom]) -> List[Groom]:
         proposal_list: List[GroomChoices] = proposal_round(grooms_involved)
 
-        rejects: List[int] = []
+        rejects: List[Groom] = []
 
         for y in self.bride_cohort:
             groom_list: List[Groom] = Bride.filter_proposal_round(y, proposal_list)
             groom_ids: List[Groom] = [i for i in groom_list]
-            rejects += Bride.current_proposal(y, groom_ids, y.held_proposal)
+            if len(groom_ids) == 0:
+                continue
+            new_rejects: List[Groom] = Bride.current_proposal(y, groom_ids, y.held_proposal)
+            if new_rejects is None:
+                continue
+            else:
+                rejects.extend(new_rejects)
 
         reject_grooms: List[Groom] = [x for x in self.groom_cohort if x.identifier in rejects]
 
