@@ -34,9 +34,9 @@ class Cohort:
             else:
                 rejects.extend(new_rejects)
 
-        reject_grooms: List[Groom] = [x for x in self.groom_cohort if x.identifier in rejects]
+        # reject_grooms: List[Groom] = [x for x in self.groom_cohort if x.identifier in rejects]
 
-        return reject_grooms
+        return rejects
 
 
 def proposal_round(grooms_involved: List[Groom]) -> List[GroomChoices]:

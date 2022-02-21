@@ -9,3 +9,6 @@ class Groom(object):
 
     def __len__(self):
         return len(self.preferences)
+
+    def __lt__(self, other):
+        return self.identifier <= other.identifier

@@ -23,31 +23,41 @@ class Bride(object):
     def current_proposal(self, groom_ids: List[Groom], held_proposal: "GroomRank") -> List[Groom]:
         """If a woman gets new proposals in a round, she immediately rejects every proposer except her most preferred,
         but does not accept that proposal. Returns a tuple of index and groom id"""
-        for index in range(len(self.preferences)):
-            list_with_ranks: list[GroomRank] = \
-                [(x, index) for x in groom_ids if x.identifier == self.preferences[index]]
-        # return (groom_id, bride_index) and then find smallest one
-        # sorted_list: list[GroomRank] = list_with_ranks.sort(key=lambda g: g[1])
+        list_with_ranks: list[GroomRank] = \
+            [(groom_ids[j], i) for i in range(len(self.preferences)) for j in range(len(groom_ids))
+             if self.preferences[i] == groom_ids[j].identifier]
+
         selected_proposal: GroomRank = min(list_with_ranks, key=lambda r: r[1])
-        rejected_proposals: list[GroomRank] = list(filter(lambda x: x != selected_proposal, list_with_ranks))
-        # selected_proposal: GroomRank = sorted_list.pop(0)
         # compare held proposal to selected
         if held_proposal is None:
             final_preference: GroomRank = selected_proposal
+        elif selected_proposal is None:
+            final_preference: GroomRank = held_proposal
+            # this shouldn't happen, we shouldn't get this far if there are no possible proposals to select from
+        elif held_proposal and selected_proposal is None:
+            pass
         else:
-            final_preference: GroomRank = min(list[selected_proposal, held_proposal], key=lambda r: r[1])
+            final_preference: GroomRank = min((selected_proposal, held_proposal), key=lambda r: r[1])
+            # todo: why can't I use list[] in that function above?
+            #  -> TypeError: 'types.GenericAlias' object is not iterable
 
-        # create list of rejects to send to next round
-        rejects: List[Groom] = [x.groom_id for x in rejected_proposals]
+        rejected_proposals: list[GroomRank] = list(filter(lambda x: x != selected_proposal, list_with_ranks))
+        # reject either held or selected
         if held_proposal is None:
-            reject_list = rejects
+            rejects = rejected_proposals
+        elif selected_proposal is None:
+            rejects = rejected_proposals
+            # this shouldn't happen, we shouldn't get this far if there are no possible proposals to select from
         elif final_preference == selected_proposal:
-            reject_list: List[Groom] = rejects + held_proposal[0]
+            rejects: List[GroomRank] = rejected_proposals.append(held_proposal)
         else:
-            reject_list: List[Groom] = rejects + selected_proposal.groom_id
+            rejects: List[GroomRank] = rejected_proposals.append(selected_proposal)
+
+        # decouple from bride index
+        reject_list: List[Groom] = [x[0] for x in rejects]
 
         self.held_proposal: Optional[GroomRank] = final_preference
-        self.preferences: List[int] = self.preferences[:final_preference[1]+1]
+        self.preferences: List[int] = self.preferences[:final_preference[1] + 1]
 
         return reject_list
 
