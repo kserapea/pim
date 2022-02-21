@@ -17,6 +17,8 @@ def complete_marriages(input_cohort: Cohort, initial_grooms: List[Groom]) -> Sta
     while len(next_grooms) != 0:
         next_grooms: List[Groom] = Cohort.matching_round(input_cohort, next_grooms)
 
+    # todo: it shouldn't get here until all the grooms have a match...
+    #  so no bride should show up with a NoneType held_proposal, however I think the next_grooms isn't working right
     marriages: List["Marriage"] = []
     for x in input_cohort.bride_cohort:
         new_marriage: Marriage = (x.held_proposal[0].identifier, x.identifier)

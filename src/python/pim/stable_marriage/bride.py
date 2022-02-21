@@ -54,7 +54,10 @@ class Bride(object):
             rejects: List[GroomRank] = rejected_proposals.append(selected_proposal)
 
         # decouple from bride index
-        reject_list: List[Groom] = [x[0] for x in rejects]
+        if rejects is None:
+            reject_list: List[Groom] = []
+        else:
+            reject_list: List[Groom] = [x[0] for x in rejects]
 
         self.held_proposal: Optional[GroomRank] = final_preference
         self.preferences: List[int] = self.preferences[:final_preference[1] + 1]
