@@ -11,14 +11,14 @@ class StableMarriage:
     marriage_pairs: List["Marriage"]
 
 
-def complete_marriages(input_cohort: Cohort, initial_grooms: List[Groom]) -> StableMarriage:
-    next_grooms: List[Groom] = initial_grooms
+def complete_marriages(input_cohort: Cohort) -> StableMarriage:
+    next_grooms: List[Groom] = input_cohort.groom_cohort
 
     while len(next_grooms) != 0:
+        # matching_round sends back the rejected grooms, which we then send back into a matching round
         next_grooms: List[Groom] = Cohort.matching_round(input_cohort, next_grooms)
+        print(next_grooms)
 
-    # todo: it shouldn't get here until all the grooms have a match...
-    #  so no bride should show up with a NoneType held_proposal, however I think the next_grooms isn't working right
     marriages: List["Marriage"] = []
     for x in input_cohort.bride_cohort:
         new_marriage: Marriage = (x.held_proposal[0].identifier, x.identifier)
